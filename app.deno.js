@@ -4,7 +4,7 @@
  *  Challenge Friends
  */
 
-import puppeteer from "https://deno.land/x/puppeteer@9.0.1/mod.ts";
+import puppeteer from "https://deno.land/x/puppeteer@9.0.2/mod.ts";
 import { readLines } from "https://deno.land/std@0.100.0/io/mod.ts";
 import {
   red,
@@ -25,9 +25,10 @@ const config = {
   print_after_every_move: true,
   auto_auth: false,
   headless: false,
+  path_to_chrome:"",
   unicode_printing: true,
   command_line_string:
-    brightGreen("huhbluehuh@lichess.org") + ":" + bold(brightBlue("~/")) + "$ ",
+    brightGreen(`chess_at_work@lichess.org`) + ":" + bold(brightBlue("~")) + "$ ",
 };
 
 const chess = new Chess();
@@ -56,6 +57,7 @@ class ChessCli {
       this.#browser = await puppeteer.launch({
         headless: config.headless,
         slowMo: 1,
+        executablePath: config.path_to_chrome
       });
       this.#page = await this.#browser.newPage();
       this.#navigationPromise = this.#page.waitForNavigation();
