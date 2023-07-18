@@ -4,7 +4,7 @@
  *  Challenge Friends
  */
 
-import puppeteer from "https://deno.land/x/puppeteer@9.0.1/mod.ts";
+import puppeteer from "https://deno.land/x/puppeteer@9.0.2/mod.ts";
 import { readLines } from "https://deno.land/std@0.100.0/io/mod.ts";
 import {
   red,
@@ -168,7 +168,7 @@ class ChessCli {
     await this.#page.waitForSelector('div > .setup-content > .color-submits > .white > i')
     await this.#page.click('div > .setup-content > .color-submits > .white > i')
     await this.#navigationPromise
-    
+
     await sleep(3000);
     console.log(`Playing stockfish ${level}`);
     await this.print_to_console();
