@@ -29,6 +29,8 @@ class ChessCli {
   isPlaying = false;
 
   command_handler;
+  command_path;
+
 
   #browser;
   #page;
@@ -127,12 +129,14 @@ class ChessCli {
         await this.challenge_stockfish(fish_level);
         this.isPlaying = true;
         this.command_handler = playing_handler;
+        this.command_path = bold(brightBlue()`/stockfish${level}`)
         break;
       case opponent.toLowerCase().includes("maia"):
         const maia_level = prompt("Select Maia Level (1,5,7) : ");
         await this.challenge_maia(maia_level);
         this.isPlaying = true;
         this.command_handler = playing_handler;
+        this.command_path = bold(brightBlue()`/maia_${level}`)
         break;
       default:
         console.log(
@@ -355,7 +359,7 @@ class ChessCli {
         }
       }
     );
-    
+
     if (status) {
       console.log(bold(status));
       this.isPlaying = false;
@@ -409,7 +413,7 @@ class ChessCli {
         await this.command_handler(x);
         Deno.writeAllSync(
           Deno.stdout,
-          new TextEncoder().encode(config.command_line_string)
+          new TextEncoder().encode(config.command_line_string + this.command_path + bold("$ "))
         );
       }
     })();

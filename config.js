@@ -15,6 +15,6 @@ export const config = {
     headless: false,
     unicode_printing: true,
     command_line_string:
-      brightGreen(`cmdlinechess@lichess.org`) + ":" + bold(brightBlue("~/")) + "$ ",
+      brightGreen(`cmdlinechess@lichess.org`) + ":" + bold(brightBlue("~/")),
   };
   
