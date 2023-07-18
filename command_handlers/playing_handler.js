@@ -12,17 +12,20 @@ export default async function playing_handler(cmd){
             help_messages.forEach(x => console.log(x))
             break;
         case cmd == 'resign':
-            this.resign();
+            await this.resign();
             break;
         case cmd == 'offer draw':
-            this.offerDraw();
+            await this.offerDraw();
             break;
         case cmd.startsWith('chat'):
             this.sendChat(cmd.slice(4,cmd.length).trim());
             break;
         case cmd == "print":
-            this.print_to_console();
+            await this.print_to_console();
             break;
+        case cmd == "clear":
+                await this.clear();
+                break;
         default:
             await this.make_move(cmd)
     }

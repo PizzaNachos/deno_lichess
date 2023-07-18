@@ -10,7 +10,7 @@ import {
 export const config = {
     username: "",
     password: "",
-    print_after_every_move: true,
+    print_after_every_move: false,
     auto_auth: false,
     headless: false,
     unicode_printing: true,

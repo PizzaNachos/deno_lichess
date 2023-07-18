@@ -171,40 +171,8 @@ class ChessCli {
 
     await sleep(3000);
     console.log(`Playing stockfish ${level}`);
-    await this.print_to_console();
 
-
-
-
-    // await browser.close()
-
-
-
-    // await this.#page.waitForSelector(
-    //   "#main-wrap > .lobby > .lobby__table > .lobby__start > .config_ai"
-    // );
-    // await this.#page.click(
-    //   "#main-wrap > .lobby > .lobby__table > .lobby__start > .config_ai"
-    // );
-
-    // await sleep(3000);
-
-    // await this.#page.select("div #sf_timeMode", "0");
-
-    // await this.#page.select("#modal-wrap #sf_variant", "1");
-
-    // await this.#page.waitForSelector(
-    //   `.level > #config_level > .radio > div:nth-child(${level}) > .required`
-    // );
-    // await this.#page.click(
-    //   `.level > #config_level > .radio > div:nth-child(${level}) > .required`
-    // );
-
-    // await this.#page.waitForSelector(
-    //   "div > form > .color-submits > .white > i"
-    // );
-    // await this.#page.click("div > form > .color-submits > .white > i");
-
+    config.print_after_every_move ? await this.print_to_console() : "";
   }
 
   async challenge_maia(level_origional) {
@@ -221,13 +189,13 @@ class ChessCli {
         break;
     }
     await this.#page.waitForSelector(
-      ".light > #top > .site-title-nav > .site-title > a"
+      "#top > .site-title-nav > .site-title > a"
     );
-    await this.#page.click(".light > #top > .site-title-nav > .site-title > a");
+    await this.#page.click("#top > .site-title-nav > .site-title > a");
 
     await this.#navigationPromise;
-    await this.#page.waitForSelector(".light > #top > .site-title-nav > .hbg");
-    await this.#page.click(".light > #top > .site-title-nav > .hbg");
+    await this.#page.waitForSelector("#top > .site-title-nav > .hbg");
+    await this.#page.click("#top > .site-title-nav > .hbg");
 
     await this.#page.waitForSelector(
       "#top > .site-title-nav > #topnav > section:nth-child(5) > a"
@@ -238,10 +206,10 @@ class ChessCli {
     await this.#navigationPromise;
 
     await this.#page.waitForSelector(
-      ".light > #main-wrap > .page-menu > .page-menu__menu > a:nth-child(5)"
+      "  > #main-wrap > .page-menu > .page-menu__menu > a:nth-child(5)"
     );
     await this.#page.click(
-      ".light > #main-wrap > .page-menu > .page-menu__menu > a:nth-child(5)"
+      "  > #main-wrap > .page-menu > .page-menu__menu > a:nth-child(5)"
     );
     await this.#navigationPromise;
 
@@ -300,7 +268,7 @@ class ChessCli {
         });
     });
 
-    const moves = await this.#page.$$eval("u8t", (moves) => {
+    const moves = await this.#page.$$eval("kwdb", (moves) => {
       return moves
         .map((move) => {
           return move.innerText;
@@ -324,10 +292,6 @@ class ChessCli {
     config.unicode_printing
       ? console.log(chess.unicode())
       : console.log(chess.ascii());
-    Deno.writeAllSync(
-      Deno.stdout,
-      new TextEncoder().encode(config.command_line_string)
-    );
   }
 
   async make_move(move) {
@@ -341,10 +305,11 @@ class ChessCli {
     await this.#page.keyboard.type(move, { delay: 10 });
     await sleep(250);
     await this.check_checkmate();
+
     config.print_after_every_move ? this.print_to_console() : "";
 
     const get_last_move = async () => {
-      const moves = await this.#page.$$eval("u8t", (moves) => {
+      const moves = await this.#page.$$eval("kwdb", (moves) => {
         return moves
           .map((move) => {
             return move.innerText;
@@ -355,24 +320,24 @@ class ChessCli {
       });
       return moves[moves.length - 1];
     };
+
     const check_moves = async (last_move) => {
-      let new_move = await get_last_move();
-      if (last_move == new_move) {
-        setTimeout(() => {
-          check_moves(new_move);
-        }, 1000);
-      } else {
-        await this.check_checkmate();
-        if (config.print_after_every_move) {
-          this.print_to_console();
+      while (true){
+        await new Promise(r => setTimeout(r, 1000));
+        let new_move = await get_last_move();
+        if (last_move == new_move) {
+          continue;
         } else {
-          console.log(new_move);
-          Deno.writeAllSync(
-            Deno.stdout,
-            new TextEncoder().encode(config.command_line_string)
-          );
+          await this.check_checkmate();
+          if (config.print_after_every_move) {
+            this.print_to_console();
+          } else {
+            console.log(new_move);
+          }
+          break;
         }
       }
+     
     };
 
     // Wait until we get another move, print to console
@@ -390,16 +355,17 @@ class ChessCli {
         }
       }
     );
+    
     if (status) {
       console.log(bold(status));
       this.isPlaying = false;
       this.command_handler = default_command_handler;
 
       await this.#page.waitForSelector(
-        ".light > #top > .site-title-nav > .site-title > a"
+        "#top > .site-title-nav > .site-title > a"
       );
       await this.#page.click(
-        ".light > #top > .site-title-nav > .site-title > a"
+        "#top > .site-title-nav > .site-title > a"
       );
 
       await this.#navigationPromise;
@@ -423,14 +389,18 @@ class ChessCli {
     );
 
     await this.#page.waitForSelector(
-      ".light > #top > .site-title-nav > .site-title > a"
+      "#top > .site-title-nav > .site-title > a"
     );
-    await this.#page.click(".light > #top > .site-title-nav > .site-title > a");
+    await this.#page.click("#top > .site-title-nav > .site-title > a");
     await this.#navigationPromise;
     console.log(blue("Resigned"));
     this.command_handler("help");
     this.isPlaying = false;
     this.command_handler = default_command_handler;
+  }
+
+  async clear(){
+    console.log("\x1b[2J\x1b[1;1H")
   }
 
   async user_input_loop() {
