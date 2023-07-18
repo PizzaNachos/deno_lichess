@@ -19,16 +19,7 @@ import Chess from "./lib/chess.js";
 import default_command_handler from "./command_handlers/default_handler.js";
 import playing_handler from "./command_handlers/playing_handler.js";
 
-const config = {
-  username: "",
-  password: "",
-  print_after_every_move: true,
-  auto_auth: false,
-  headless: false,
-  unicode_printing: true,
-  command_line_string:
-    brightGreen("huhbluehuh@lichess.org") + ":" + bold(brightBlue("~/")) + "$ ",
-};
+import { config } from "./config.js";
 
 const chess = new Chess();
 class ChessCli {
@@ -55,7 +46,7 @@ class ChessCli {
     if (!this.isInit) {
       this.#browser = await puppeteer.launch({
         headless: config.headless,
-        slowMo: 1,
+        slowMo: 50,
       });
       this.#page = await this.#browser.newPage();
       this.#navigationPromise = this.#page.waitForNavigation();
@@ -154,33 +145,66 @@ class ChessCli {
   }
 
   async challenge_stockfish(level) {
-    await this.#page.waitForSelector(
-      "#main-wrap > .lobby > .lobby__table > .lobby__start > .config_ai"
-    );
-    await this.#page.click(
-      "#main-wrap > .lobby > .lobby__table > .lobby__start > .config_ai"
-    );
-
-    await sleep(3000);
-
-    await this.#page.select("div #sf_timeMode", "0");
-
-    await this.#page.select("#modal-wrap #sf_variant", "1");
-
-    await this.#page.waitForSelector(
-      `.level > #config_level > .radio > div:nth-child(${level}) > .required`
-    );
-    await this.#page.click(
-      `.level > #config_level > .radio > div:nth-child(${level}) > .required`
-    );
-
-    await this.#page.waitForSelector(
-      "div > form > .color-submits > .white > i"
-    );
-    await this.#page.click("div > form > .color-submits > .white > i");
+    
+    await this.#page.waitForSelector('.dark > #main-wrap > .lobby > .lobby__table > .lobby__start > .config_ai')
+    await this.#page.click('.dark > #main-wrap > .lobby > .lobby__table > .lobby__start > .config_ai')
+    
+    await this.#page.waitForSelector('#sf_variant')
+    await this.#page.click('#sf_variant')
+    
+    await this.#page.waitForSelector('#sf_variant')
+    await this.#page.click('#sf_variant')
+    
+    await this.#page.waitForSelector('#sf_timeMode')
+    await this.#page.click('#sf_timeMode')
+    
+    await this.#page.waitForSelector('#sf_timeMode')
+    await this.#page.click('#sf_timeMode')
+    
+    await this.#page.waitForSelector(`.level > .config_level > .radio > div:nth-child(${level}) > label`)
+    await this.#page.click(`.level > .config_level > .radio > div:nth-child(${level}) > label`)
+    
+    
+    await this.#page.waitForSelector('div > .setup-content > .color-submits > .white > i')
+    await this.#page.click('div > .setup-content > .color-submits > .white > i')
+    await this.#navigationPromise
+    
     await sleep(3000);
     console.log(`Playing stockfish ${level}`);
     await this.print_to_console();
+
+
+
+
+    // await browser.close()
+
+
+
+    // await this.#page.waitForSelector(
+    //   "#main-wrap > .lobby > .lobby__table > .lobby__start > .config_ai"
+    // );
+    // await this.#page.click(
+    //   "#main-wrap > .lobby > .lobby__table > .lobby__start > .config_ai"
+    // );
+
+    // await sleep(3000);
+
+    // await this.#page.select("div #sf_timeMode", "0");
+
+    // await this.#page.select("#modal-wrap #sf_variant", "1");
+
+    // await this.#page.waitForSelector(
+    //   `.level > #config_level > .radio > div:nth-child(${level}) > .required`
+    // );
+    // await this.#page.click(
+    //   `.level > #config_level > .radio > div:nth-child(${level}) > .required`
+    // );
+
+    // await this.#page.waitForSelector(
+    //   "div > form > .color-submits > .white > i"
+    // );
+    // await this.#page.click("div > form > .color-submits > .white > i");
+
   }
 
   async challenge_maia(level_origional) {
